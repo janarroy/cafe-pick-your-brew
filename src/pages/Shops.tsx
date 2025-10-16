@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Star, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Star, Clock, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const shops = [
@@ -11,7 +12,9 @@ const shops = [
     rating: 4.8,
     distance: "0.5 mi",
     openUntil: "8:00 PM",
-    specialty: "Specialty Lattes & Pour-overs"
+    specialty: "Specialty Lattes & Pour-overs",
+    reviews: 342,
+    recommended: true
   },
   {
     id: 2,
@@ -20,7 +23,8 @@ const shops = [
     rating: 4.6,
     distance: "1.2 mi",
     openUntil: "7:00 PM",
-    specialty: "Fresh Pastries & Espresso"
+    specialty: "Fresh Pastries & Espresso",
+    reviews: 215
   },
   {
     id: 3,
@@ -29,7 +33,9 @@ const shops = [
     rating: 4.9,
     distance: "0.8 mi",
     openUntil: "9:00 PM",
-    specialty: "Cold Brew & Iced Drinks"
+    specialty: "Cold Brew & Iced Drinks",
+    reviews: 487,
+    recommended: true
   },
   {
     id: 4,
@@ -38,7 +44,8 @@ const shops = [
     rating: 4.7,
     distance: "1.5 mi",
     openUntil: "6:00 PM",
-    specialty: "Single Origin & Fair Trade"
+    specialty: "Single Origin & Fair Trade",
+    reviews: 156
   }
 ];
 
@@ -62,16 +69,27 @@ const Shops = () => {
             >
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2 text-foreground">{shop.name}</h3>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-2xl font-bold text-foreground">{shop.name}</h3>
+                      {shop.recommended && (
+                        <Badge className="bg-accent/20 text-accent border-accent/40">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          Recommended
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-muted-foreground flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
                       {shop.address}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 bg-accent/10 px-3 py-1 rounded-full">
-                    <Star className="h-4 w-4 fill-accent text-accent" />
-                    <span className="font-semibold text-foreground">{shop.rating}</span>
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-1 bg-accent/10 px-3 py-1 rounded-full">
+                      <Star className="h-4 w-4 fill-accent text-accent" />
+                      <span className="font-semibold text-foreground">{shop.rating}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{shop.reviews} reviews</span>
                   </div>
                 </div>
 

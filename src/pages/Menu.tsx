@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, ArrowLeft, Plus, Minus } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Plus, Minus, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const baristas = [
@@ -213,11 +213,24 @@ const Menu = () => {
                       ))}
                     </div>
 
-                    <div className="border-t border-border pt-4 mb-6">
-                      <div className="flex justify-between items-center text-xl font-bold">
-                        <span className="text-foreground">Total</span>
-                        <span className="text-primary">${cartTotal.toFixed(2)}</span>
+                    <div className="border-t border-border pt-4 mb-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-foreground">Subtotal</span>
+                        <span className="text-foreground">${cartTotal.toFixed(2)}</span>
                       </div>
+                      <div className="flex justify-between items-center text-sm text-accent">
+                        <span className="flex items-center gap-1">
+                          <Star className="h-3 w-3" />
+                          Rewards Points
+                        </span>
+                        <span className="font-semibold">+{Math.floor(cartTotal * 2)} pts</span>
+                      </div>
+                    </div>
+
+                    <div className="mb-6 p-3 bg-accent/10 rounded-lg border border-accent/20">
+                      <p className="text-sm text-center text-foreground">
+                        <strong>Earn {Math.floor(cartTotal * 2)} points</strong> with this order!
+                      </p>
                     </div>
 
                     <Button className="w-full bg-gradient-coffee hover:opacity-90 transition-opacity text-lg py-6">
