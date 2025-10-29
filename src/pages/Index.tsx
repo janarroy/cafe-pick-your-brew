@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Coffee, MapPin, Users, Gift, Star, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/coffee-hero.jpg";
+import AdBanner from "@/components/AdBanner";
 
 const Index = () => {
   return (
@@ -44,6 +45,13 @@ const Index = () => {
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Ad Banner - Top */}
+      <section className="py-8 px-4 bg-background">
+        <div className="max-w-6xl mx-auto">
+          <AdBanner size="large" />
         </div>
       </section>
 
@@ -96,6 +104,13 @@ const Index = () => {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Ad Banner - Mid */}
+      <section className="py-8 px-4 bg-background">
+        <div className="max-w-6xl mx-auto">
+          <AdBanner size="medium" />
         </div>
       </section>
 
@@ -172,6 +187,13 @@ const Index = () => {
               </Card>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Ad Banner - Bottom */}
+      <section className="py-8 px-4 bg-background">
+        <div className="max-w-6xl mx-auto">
+          <AdBanner size="medium" />
         </div>
       </section>
 
