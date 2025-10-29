@@ -11,10 +11,34 @@ const Index = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const heroImages = [
-    { url: heroImage, shop: "Artisan Coffee" },
-    { url: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1200&h=800&fit=crop", shop: "Philz Coffee" },
-    { url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop", shop: "Starbucks Reserve" },
-    { url: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&h=800&fit=crop", shop: "Blue Bottle Coffee" }
+    { 
+      url: heroImage, 
+      shop: "Artisan Coffee",
+      title: "One Loyalty Program,",
+      subtitle: "Every Coffee Shop",
+      description: "Discover cafes, order ahead, and earn universal rewards across our entire network"
+    },
+    { 
+      url: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1200&h=800&fit=crop", 
+      shop: "Philz Coffee",
+      title: "Personalized Coffee,",
+      subtitle: "Your Favorite Barista",
+      description: "Choose your barista and get personalized service at every visit"
+    },
+    { 
+      url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop", 
+      shop: "Starbucks Reserve",
+      title: "Order Ahead,",
+      subtitle: "Skip the Line",
+      description: "Pre-order your drinks and pick them up at your convenience"
+    },
+    { 
+      url: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&h=800&fit=crop", 
+      shop: "Blue Bottle Coffee",
+      title: "Earn Rewards,",
+      subtitle: "Every Purchase",
+      description: "Get points at every cafe and unlock exclusive perks as you level up"
+    }
   ];
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
@@ -67,12 +91,12 @@ const Index = () => {
             Earn Rewards at Every Cafe
           </Badge>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-primary-foreground">
-            One Loyalty Program,
+            {heroImages[currentImageIndex].title}
             <br />
-            Every Coffee Shop
+            {heroImages[currentImageIndex].subtitle}
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-primary-foreground/90">
-            Discover cafes, order ahead, and earn universal rewards across our entire network
+            {heroImages[currentImageIndex].description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/shops">
