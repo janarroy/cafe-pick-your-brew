@@ -1,21 +1,64 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Coffee, MapPin, Users, Gift, Star, Sparkles } from "lucide-react";
+import { Coffee, MapPin, Users, Gift, Star, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/coffee-hero.jpg";
-import AdBanner from "@/components/AdBanner";
+import { useState } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const Index = () => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const heroImages = [
+    { url: heroImage, shop: "Artisan Coffee" },
+    { url: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1200&h=800&fit=crop", shop: "Philz Coffee" },
+    { url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop", shop: "Starbucks Reserve" },
+    { url: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&h=800&fit=crop", shop: "Blue Bottle Coffee" }
+  ];
+
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroImage})` }}
+          className="absolute inset-0 bg-cover bg-center transition-all duration-500"
+          style={{ backgroundImage: `url(${heroImages[currentImageIndex].url})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-transparent" />
+        </div>
+        
+        {/* Carousel Controls */}
+        <button 
+          onClick={prevImage}
+          className="absolute left-4 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-colors"
+          aria-label="Previous image"
+        >
+          <ChevronLeft className="h-6 w-6 text-white" />
+        </button>
+        <button 
+          onClick={nextImage}
+          className="absolute right-4 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3 transition-colors"
+          aria-label="Next image"
+        >
+          <ChevronRight className="h-6 w-6 text-white" />
+        </button>
+        
+        {/* Image Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentImageIndex ? "bg-white w-8" : "bg-white/50"
+              }`}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
         </div>
         
         <div className="relative z-10 text-center px-4 max-w-4xl animate-fade-in">
@@ -48,13 +91,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Ad Banner - Top */}
-      <section className="py-8 px-4 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <AdBanner size="large" />
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-20 px-4 bg-gradient-cream">
         <div className="max-w-6xl mx-auto">
@@ -64,7 +100,7 @@ const Index = () => {
           </p>
           
           <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center animate-slide-up">
+            <Link to="/shops" className="text-center animate-slide-up hover-scale cursor-pointer">
               <div className="w-20 h-20 bg-gradient-coffee rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm">
                 <MapPin className="h-10 w-10 text-primary-foreground" />
               </div>
@@ -72,9 +108,9 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Browse local coffee shops with personalized recommendations
               </p>
-            </div>
+            </Link>
 
-            <div className="text-center animate-slide-up" style={{ animationDelay: "0.1s" }}>
+            <Link to="/shops" className="text-center animate-slide-up hover-scale cursor-pointer" style={{ animationDelay: "0.1s" }}>
               <div className="w-20 h-20 bg-gradient-coffee rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm">
                 <Users className="h-10 w-10 text-primary-foreground" />
               </div>
@@ -82,9 +118,9 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Select your favorite barista for a personal touch
               </p>
-            </div>
+            </Link>
 
-            <div className="text-center animate-slide-up" style={{ animationDelay: "0.2s" }}>
+            <Link to="/shops" className="text-center animate-slide-up hover-scale cursor-pointer" style={{ animationDelay: "0.2s" }}>
               <div className="w-20 h-20 bg-gradient-coffee rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm">
                 <Coffee className="h-10 w-10 text-primary-foreground" />
               </div>
@@ -92,9 +128,9 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Skip the line with pre-order and pickup
               </p>
-            </div>
+            </Link>
 
-            <div className="text-center animate-slide-up" style={{ animationDelay: "0.3s" }}>
+            <Link to="/profile" className="text-center animate-slide-up hover-scale cursor-pointer" style={{ animationDelay: "0.3s" }}>
               <div className="w-20 h-20 bg-gradient-coffee rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-warm">
                 <Gift className="h-10 w-10 text-primary-foreground" />
               </div>
@@ -102,15 +138,8 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Get points at every cafe in our network
               </p>
-            </div>
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Ad Banner - Mid */}
-      <section className="py-8 px-4 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <AdBanner size="medium" />
         </div>
       </section>
 
@@ -167,18 +196,56 @@ const Index = () => {
                   <div className="text-6xl font-bold mb-2">350</div>
                   <div className="text-xl mb-6 opacity-90">Points Available</div>
                   <div className="grid grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-                      <div className="text-2xl font-bold">Bronze</div>
-                      <div className="text-sm opacity-75">0-500 pts</div>
-                    </div>
-                    <div className="bg-white/20 rounded-lg p-4 backdrop-blur-sm border-2 border-white/40">
-                      <div className="text-2xl font-bold">Silver</div>
-                      <div className="text-sm opacity-75">500-1000</div>
-                    </div>
-                    <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-                      <div className="text-2xl font-bold">Gold</div>
-                      <div className="text-sm opacity-75">1000+</div>
-                    </div>
+                    <Collapsible>
+                      <CollapsibleTrigger className="w-full">
+                        <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer">
+                          <div className="text-2xl font-bold">Bronze</div>
+                          <div className="text-sm opacity-75">0-500 pts</div>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 bg-white/20 rounded-lg p-3 text-sm backdrop-blur-sm">
+                        <ul className="space-y-1 text-left">
+                          <li>• 5% off all drinks</li>
+                          <li>• Birthday reward</li>
+                          <li>• Free size upgrade</li>
+                        </ul>
+                      </CollapsibleContent>
+                    </Collapsible>
+                    
+                    <Collapsible>
+                      <CollapsibleTrigger className="w-full">
+                        <div className="bg-white/20 rounded-lg p-4 backdrop-blur-sm border-2 border-white/40 hover:bg-white/30 transition-colors cursor-pointer">
+                          <div className="text-2xl font-bold">Silver</div>
+                          <div className="text-sm opacity-75">500-1000</div>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 bg-white/20 rounded-lg p-3 text-sm backdrop-blur-sm">
+                        <ul className="space-y-1 text-left">
+                          <li>• 10% off all drinks</li>
+                          <li>• Free drink monthly</li>
+                          <li>• Priority ordering</li>
+                          <li>• Early access to new items</li>
+                        </ul>
+                      </CollapsibleContent>
+                    </Collapsible>
+                    
+                    <Collapsible>
+                      <CollapsibleTrigger className="w-full">
+                        <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer">
+                          <div className="text-2xl font-bold">Gold</div>
+                          <div className="text-sm opacity-75">1000+</div>
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 bg-white/20 rounded-lg p-3 text-sm backdrop-blur-sm">
+                        <ul className="space-y-1 text-left">
+                          <li>• 15% off all drinks</li>
+                          <li>• 2 free drinks monthly</li>
+                          <li>• VIP events access</li>
+                          <li>• Personal barista requests</li>
+                          <li>• Free pastry weekly</li>
+                        </ul>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </div>
                   <Button size="lg" variant="secondary" className="w-full">
                     Join Rewards Program
@@ -187,13 +254,6 @@ const Index = () => {
               </Card>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Ad Banner - Bottom */}
-      <section className="py-8 px-4 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <AdBanner size="medium" />
         </div>
       </section>
 

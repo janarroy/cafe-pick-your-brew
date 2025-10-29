@@ -2,8 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LoyaltyCard } from "@/components/LoyaltyCard";
-import { User, MapPin, Clock, Coffee, ArrowLeft } from "lucide-react";
+import { User, MapPin, Clock, Coffee, ArrowLeft, RotateCcw, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const recentOrders = [
   {
@@ -35,7 +39,29 @@ const recentOrders = [
   }
 ];
 
+const weeklyData = [
+  { day: "Mon", orders: 2 },
+  { day: "Tue", orders: 1 },
+  { day: "Wed", orders: 3 },
+  { day: "Thu", orders: 1 },
+  { day: "Fri", orders: 2 },
+  { day: "Sat", orders: 4 },
+  { day: "Sun", orders: 2 }
+];
+
+const monthlyData = [
+  { week: "Week 1", orders: 8 },
+  { week: "Week 2", orders: 12 },
+  { week: "Week 3", orders: 10 },
+  { week: "Week 4", orders: 15 }
+];
+
 const Profile = () => {
+  const [orderView, setOrderView] = useState<"week" | "month">("week");
+  const currentPoints = 350;
+  const nextRewardAt = 400;
+  const progressToNextReward = ((currentPoints % 100) / 100) * 100;
+
   return (
     <div className="min-h-screen py-8 px-4">
       <div className="max-w-6xl mx-auto">
@@ -60,12 +86,46 @@ const Profile = () => {
                   Member since Jan 2025
                 </Badge>
                 
-                <div className="grid grid-cols-2 gap-4 mb-6 text-center">
+                <div className="space-y-4 mb-6">
                   <div className="bg-muted rounded-lg p-4">
-                    <div className="text-2xl font-bold text-foreground">47</div>
-                    <div className="text-sm text-muted-foreground">Total Orders</div>
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="text-sm text-muted-foreground">Total Orders</div>
+                      <Tabs value={orderView} onValueChange={(v) => setOrderView(v as "week" | "month")} className="w-auto">
+                        <TabsList className="h-7">
+                          <TabsTrigger value="week" className="text-xs">Week</TabsTrigger>
+                          <TabsTrigger value="month" className="text-xs">Month</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                    </div>
+                    <div className="text-2xl font-bold text-foreground mb-3">47</div>
+                    <ResponsiveContainer width="100%" height={100}>
+                      <LineChart data={orderView === "week" ? weeklyData : monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis 
+                          dataKey={orderView === "week" ? "day" : "week"} 
+                          tick={{ fontSize: 10 }}
+                          stroke="hsl(var(--muted-foreground))"
+                        />
+                        <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: "hsl(var(--background))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "6px"
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="orders" 
+                          stroke="hsl(var(--primary))" 
+                          strokeWidth={2}
+                          dot={{ fill: "hsl(var(--primary))" }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div className="bg-muted rounded-lg p-4">
+                  
+                  <div className="bg-muted rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-foreground">8</div>
                     <div className="text-sm text-muted-foreground">Cafes Visited</div>
                   </div>
@@ -114,8 +174,27 @@ const Profile = () => {
           <div className="lg:col-span-2">
             {/* Loyalty Card */}
             <div className="mb-8">
-              <LoyaltyCard points={350} tier="silver" />
+              <LoyaltyCard points={currentPoints} tier="silver" />
             </div>
+            
+            {/* Next Reward Progress */}
+            <Card className="shadow-warm mb-8">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Gift className="h-5 w-5 text-accent" />
+                    <h3 className="font-semibold text-foreground">Next Reward</h3>
+                  </div>
+                  <Badge variant="secondary" className="bg-accent/10 text-accent border-accent/20">
+                    {nextRewardAt - currentPoints} pts away
+                  </Badge>
+                </div>
+                <Progress value={progressToNextReward} className="h-3 mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Earn {nextRewardAt - currentPoints} more points to unlock a free drink!
+                </p>
+              </CardContent>
+            </Card>
 
             {/* Recent Orders */}
             <Card className="shadow-warm">
@@ -159,8 +238,11 @@ const Profile = () => {
                         </div>
                         
                         <div className="mt-3 pt-3 border-t border-border flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">Total</span>
                           <span className="font-semibold text-foreground">${order.total.toFixed(2)}</span>
+                          <Button size="sm" variant="outline" className="gap-1">
+                            <RotateCcw className="h-3 w-3" />
+                            Reorder
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
