@@ -12,9 +12,8 @@ export const DrinkRecommendations: React.FC = () => {
   const [recommended, setRecommended] = useState<Drink[]>([]);
 
   useEffect(() => {
-    // Get the user's most-ordered drinks from localStorage
-    const topIds = getTopDrinks(3); // top 3 favorites
-
+    // Fetch top 3 drinks from user's order history
+    const topIds = getTopDrinks(3);
     const drinks = DRINKS.filter((d) =>
       topIds.includes(d.id as DrinkId)
     ) as Drink[];
@@ -22,35 +21,28 @@ export const DrinkRecommendations: React.FC = () => {
     setRecommended(drinks);
   }, []);
 
-  // If the user has no history yet, show nothing
-  if (recommended.length === 0) return null;
-
   return (
-    <section style={{ marginTop: "1.5rem" }}>
-      <h2
-        style={{
-          fontWeight: 600,
-          fontSize: "1.1rem",
-          marginBottom: "0.5rem",
-        }}
-      >
-        Recommended for you
+    <section className="mt-6">
+      <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+        🔥 Recommended for you
       </h2>
-      <ul style={{ listStyle: "none", paddingLeft: 0, margin: 0 }}>
-        {recommended.map((drink) => (
-          <li
-            key={drink.id}
-            style={{
-              padding: "0.5rem 0.75rem",
-              borderRadius: 8,
-              border: "1px solid #eee",
-              marginBottom: "0.4rem",
-            }}
-          >
-            {drink.name}
-          </li>
-        ))}
-      </ul>
+
+      {recommended.length === 0 ? (
+        <p className="text-muted-foreground text-sm">
+          Start ordering drinks and we’ll show your favorites here.
+        </p>
+      ) : (
+        <ul className="grid gap-2">
+          {recommended.map((drink) => (
+            <li
+              key={drink.id}
+              className="border rounded-xl px-4 py-3 text-foreground hover:bg-muted transition"
+            >
+              <div className="font-medium">{drink.name}</div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 };

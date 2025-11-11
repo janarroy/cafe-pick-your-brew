@@ -1,3 +1,6 @@
+import { DrinkRecommendations } from "@/components/DrinkRecommendations";
+import { recordOrder } from "@/lib/orderHistory";
+import type { DrinkId } from "@/data/drinks";
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -44,6 +47,17 @@ const drinks = {
     { id: 17, name: "Almond Biscotti", price: 2.75, description: "Perfect for dipping", calories: 120 },
     { id: 18, name: "Cinnamon Roll", price: 4.25, description: "Warm with cream cheese frosting", calories: 420 },
   ]
+};
+
+
+// map numeric menu IDs to DrinkId strings
+const drinkIdMap: Record<number, DrinkId> = {
+  1: "cappuccino",
+  2: "latte",
+  3: "americano",
+  4: "mocha",
+  5: "flat-white",
+  6: "macchiato",
 };
 
 const milkOptions = [
@@ -267,7 +281,7 @@ const Menu = () => {
                 ))}
               </div>
             </div>
-
+<DrinkRecommendations />
             {/* Menu */}
             <div className="animate-slide-up">
               <h2 className="text-3xl font-bold mb-4 text-foreground">Menu</h2>
@@ -435,7 +449,13 @@ const Menu = () => {
                             <DialogTrigger asChild>
                               <Button 
                                 className="flex-1 bg-gradient-coffee"
-                                onClick={() => setCustomizingDrink(drink)}
+                                onClick={() => {
+    // tell the recommendation engine which drink was chosen
+    recordOrder(drinkIdMap[drink.id]);
+
+    // keep your existing behavior (open the customize dialog)
+    setCustomizingDrink(drink);
+  }}
                               >
                                 <Milk className="h-4 w-4 mr-2" />
                                 Customize & Add
