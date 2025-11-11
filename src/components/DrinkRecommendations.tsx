@@ -26,6 +26,9 @@ export const DrinkRecommendations: React.FC = () => {
       <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
         🔥 Recommended for you
       </h2>
+<p className="text-[10px] text-muted-foreground">
+  debug: {JSON.stringify(getTopDrinks(3))}
+</p>
 
       {recommended.length === 0 ? (
         <p className="text-muted-foreground text-sm">
