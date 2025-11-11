@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CreditCard, Wallet, Star, Clock, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { recordOrder } from "@/lib/orderHistory";
+import type { DrinkId } from "@/data/drinks";
 
 const Checkout = () => {
   const location = useLocation();
@@ -24,6 +26,32 @@ const Checkout = () => {
   const total = cartTotal + tax;
 
   const handlePlaceOrder = () => {
+    // Record each drink in the order history for recommendations
+    cart.forEach((item: any) => {
+      const drinkName = item.drink.name.toLowerCase().replace(/\s+/g, '-');
+      
+      // Map drink names to DrinkId
+      const drinkIdMap: Record<string, DrinkId> = {
+        'cappuccino': 'cappuccino',
+        'latte': 'latte',
+        'iced-latte': 'latte',
+        'americano': 'americano',
+        'mocha': 'mocha',
+        'iced-mocha': 'mocha',
+        'flat-white': 'flat-white',
+        'macchiato': 'macchiato',
+        'iced-caramel-macchiato': 'macchiato',
+      };
+      
+      const drinkId = drinkIdMap[drinkName];
+      if (drinkId) {
+        // Record once for each quantity
+        for (let i = 0; i < item.quantity; i++) {
+          recordOrder(drinkId);
+        }
+      }
+    });
+
     toast({
       title: "Order Placed! 🎉",
       description: `Your order will be ready in 15 minutes. You earned ${pointsEarned} points!`,
