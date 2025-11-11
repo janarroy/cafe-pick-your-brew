@@ -49,6 +49,17 @@ const drinks = {
   ]
 };
 
+
+// map numeric menu IDs to DrinkId strings
+const drinkIdMap: Record<number, DrinkId> = {
+  1: "cappuccino",
+  2: "latte",
+  3: "americano",
+  4: "mocha",
+  5: "flat-white",
+  6: "macchiato",
+};
+
 const milkOptions = [
   { id: "whole", name: "Whole Milk", extra: 0 },
   { id: "2percent", name: "2% Milk", extra: 0 },
@@ -438,7 +449,13 @@ const Menu = () => {
                             <DialogTrigger asChild>
                               <Button 
                                 className="flex-1 bg-gradient-coffee"
-                                onClick={() => setCustomizingDrink(drink)}
+                                onClick={() => {
+    // tell the recommendation engine which drink was chosen
+    recordOrder(drinkIdMap[drink.id]);
+
+    // keep your existing behavior (open the customize dialog)
+    setCustomizingDrink(drink);
+  }}
                               >
                                 <Milk className="h-4 w-4 mr-2" />
                                 Customize & Add
