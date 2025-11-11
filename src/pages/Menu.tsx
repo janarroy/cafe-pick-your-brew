@@ -1,4 +1,4 @@
-import { DrinkRecommendations } from "@/components/DrinkRecommendations";
+fimport { DrinkRecommendations } from "@/components/DrinkRecommendations";
 import { recordOrder } from "@/lib/orderHistory";
 import type { DrinkId } from "@/data/drinks";
 import { useState } from "react";
@@ -314,7 +314,13 @@ const Menu = () => {
                             <DialogTrigger asChild>
                               <Button 
                                 className="flex-1 bg-gradient-coffee"
-                                onClick={() => setCustomizingDrink(drink)}
+                                onClick={() => {
+        const mappedId = drinkIdMap[drink.id];
+        if (mappedId) {
+          recordOrder(mappedId);
+        }
+        setCustomizingDrink(drink);
+      }}
                               >
                                 <Milk className="h-4 w-4 mr-2" />
                                 Customize & Add
