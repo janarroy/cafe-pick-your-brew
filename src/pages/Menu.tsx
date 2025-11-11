@@ -1,3 +1,6 @@
+import { DrinkRecommendations } from "@/components/DrinkRecommendations";
+import { recordOrder } from "@/lib/orderHistory";
+import type { DrinkId } from "@/data/drinks";
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -267,7 +270,7 @@ const Menu = () => {
                 ))}
               </div>
             </div>
-
+<DrinkRecommendations />
             {/* Menu */}
             <div className="animate-slide-up">
               <h2 className="text-3xl font-bold mb-4 text-foreground">Menu</h2>
