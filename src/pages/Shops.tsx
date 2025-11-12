@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Clock, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import { getRecommendedShops } from "@/lib/orderHistory";
 
-const shops = [
+const shopsData = [
   {
     id: 1,
     name: "Artisan Coffee House",
@@ -13,8 +15,7 @@ const shops = [
     distance: "0.5 mi",
     openUntil: "8:00 PM",
     specialty: "Specialty Lattes & Pour-overs",
-    reviews: 342,
-    recommended: true
+    reviews: 342
   },
   {
     id: 2,
@@ -34,8 +35,7 @@ const shops = [
     distance: "0.8 mi",
     openUntil: "9:00 PM",
     specialty: "Cold Brew & Iced Drinks",
-    reviews: 487,
-    recommended: true
+    reviews: 487
   },
   {
     id: 4,
@@ -50,6 +50,17 @@ const shops = [
 ];
 
 const Shops = () => {
+  // Get recommended shop IDs based on order history
+  const recommendedShopIds = useMemo(() => getRecommendedShops(2), []);
+  
+  // Add recommended flag to shops based on order history
+  const shops = useMemo(() => {
+    return shopsData.map(shop => ({
+      ...shop,
+      recommended: recommendedShopIds.includes(shop.id)
+    }));
+  }, [recommendedShopIds]);
+
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">

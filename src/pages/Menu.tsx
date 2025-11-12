@@ -210,7 +210,8 @@ const Menu = () => {
       state: { 
         cart, 
         cartTotal, 
-        shopName: "Coffee Shop #" + shopId 
+        shopName: "Coffee Shop #" + shopId,
+        shopId: parseInt(shopId || "1", 10)
       } 
     });
   };

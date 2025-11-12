@@ -9,14 +9,14 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CreditCard, Wallet, Star, Clock, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { recordOrder } from "@/lib/orderHistory";
+import { recordOrder, recordShopOrder } from "@/lib/orderHistory";
 import type { DrinkId } from "@/data/drinks";
 
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, cartTotal, shopName } = location.state || { cart: [], cartTotal: 0, shopName: "Coffee Shop" };
+  const { cart, cartTotal, shopName, shopId } = location.state || { cart: [], cartTotal: 0, shopName: "Coffee Shop", shopId: 1 };
   
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [pickupTime, setPickupTime] = useState("asap");
@@ -26,6 +26,11 @@ const Checkout = () => {
   const total = cartTotal + tax;
 
   const handlePlaceOrder = () => {
+    // Record the shop order for shop recommendations
+    if (shopId) {
+      recordShopOrder(shopId);
+    }
+
     // Record each drink in the order history for recommendations
     cart.forEach((item: any) => {
       const drinkName = item.drink.name.toLowerCase().replace(/\s+/g, '-');
