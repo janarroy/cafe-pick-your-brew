@@ -104,3 +104,42 @@ export function getRecommendedShops(limit: number = 2): number[] {
     .slice(0, limit)
     .map(([shopId]) => parseInt(shopId, 10));
 }
+
+// Tag tracking for shop recommendations
+const TAG_STORAGE_KEY = "brewBuddy_tag_history";
+
+type TagHistory = Record<string, number>;
+
+export function loadTagHistory(): TagHistory {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(TAG_STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as TagHistory;
+  } catch {
+    return {};
+  }
+}
+
+function saveTagHistory(history: TagHistory) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(TAG_STORAGE_KEY, JSON.stringify(history));
+}
+
+// Record tags when ordering from a shop
+export function recordShopTags(tags: string[]) {
+  const history = loadTagHistory();
+  tags.forEach(tag => {
+    history[tag] = (history[tag] || 0) + 1;
+  });
+  saveTagHistory(history);
+}
+
+// Get user's preferred tags sorted by frequency
+export function getPreferredTags(): string[] {
+  const history = loadTagHistory();
+  return Object.entries(history)
+    .sort((a, b) => b[1] - a[1])
+    .filter(([, count]) => count > 0)
+    .map(([tag]) => tag);
+}

@@ -9,14 +9,21 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CreditCard, Wallet, Star, Clock, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { recordOrder, recordShopOrder } from "@/lib/orderHistory";
+import { recordOrder, recordShopOrder, recordShopTags } from "@/lib/orderHistory";
 import type { DrinkId } from "@/data/drinks";
+import type { ShopTag } from "./Shops";
 
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { cart, cartTotal, shopName, shopId } = location.state || { cart: [], cartTotal: 0, shopName: "Coffee Shop", shopId: 1 };
+  const { cart, cartTotal, shopName, shopId, shopTags } = location.state || { 
+    cart: [], 
+    cartTotal: 0, 
+    shopName: "Coffee Shop", 
+    shopId: 1,
+    shopTags: [] as ShopTag[]
+  };
   
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [pickupTime, setPickupTime] = useState("asap");
@@ -29,6 +36,11 @@ const Checkout = () => {
     // Record the shop order for shop recommendations
     if (shopId) {
       recordShopOrder(shopId);
+    }
+    
+    // Record shop tags for tag-based recommendations
+    if (shopTags && shopTags.length > 0) {
+      recordShopTags(shopTags);
     }
 
     // Record each drink in the order history for recommendations

@@ -1,7 +1,7 @@
 import { DrinkRecommendations } from "@/components/DrinkRecommendations";
 import { recordOrder } from "@/lib/orderHistory";
 import type { DrinkId } from "@/data/drinks";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ShoppingCart, ArrowLeft, Plus, Minus, Star, Milk, Leaf, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { shopsData } from "./Shops";
 
 const baristas = [
   { id: 1, name: "Emma Rodriguez", specialty: "Latte Art Master", avatar: "👩‍🦱", rating: 4.9, orders: 1240 },
@@ -204,14 +205,20 @@ const Menu = () => {
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.drink.price * item.quantity), 0);
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  
+  // Get current shop's tags
+  const currentShop = useMemo(() => {
+    return shopsData.find(shop => shop.id === parseInt(shopId || "1", 10));
+  }, [shopId]);
 
   const handleCheckout = () => {
     navigate('/checkout', { 
       state: { 
         cart, 
         cartTotal, 
-        shopName: "Coffee Shop #" + shopId,
-        shopId: parseInt(shopId || "1", 10)
+        shopName: currentShop?.name || "Coffee Shop #" + shopId,
+        shopId: parseInt(shopId || "1", 10),
+        shopTags: currentShop?.tags || []
       } 
     });
   };
