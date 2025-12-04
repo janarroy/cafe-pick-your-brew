@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Coffee, MapPin, Users, Gift, Star, ArrowRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
 import heroImage from "@/assets/coffee-hero.jpg";
+import { getLastOrderedShop } from "@/lib/orderHistory";
 
 const Index = () => {
+  const lastShopId = useMemo(() => getLastOrderedShop(), []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section - Full screen, minimal */}
@@ -98,23 +102,26 @@ const Index = () => {
                 step: "01",
                 title: "Discover",
                 description: "Browse cafes near you with personalized recommendations based on your taste.",
+                link: "/shops",
               },
               {
                 icon: Coffee,
                 step: "02",
                 title: "Order",
                 description: "Choose your drink, pick your barista, and order ahead to skip the line.",
+                link: lastShopId ? `/menu/${lastShopId}` : "/shops",
               },
               {
                 icon: Gift,
                 step: "03",
                 title: "Earn",
                 description: "Collect points at every cafe and unlock rewards across our entire network.",
+                link: "/profile",
               },
-            ].map((item, index) => (
+            ].map((item) => (
               <Link
                 key={item.step}
-                to="/shops"
+                to={item.link}
                 className="group p-8 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
               >
                 <div className="flex items-center gap-4 mb-6">
