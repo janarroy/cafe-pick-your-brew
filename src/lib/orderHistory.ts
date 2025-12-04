@@ -105,6 +105,12 @@ export function getRecommendedShops(limit: number = 2): number[] {
     .map(([shopId]) => parseInt(shopId, 10));
 }
 
+// Get the last ordered shop ID (most recently ordered)
+export function getLastOrderedShop(): number | null {
+  const recommended = getRecommendedShops(1);
+  return recommended.length > 0 ? recommended[0] : null;
+}
+
 // Tag tracking for shop recommendations
 const TAG_STORAGE_KEY = "brewBuddy_tag_history";
 
