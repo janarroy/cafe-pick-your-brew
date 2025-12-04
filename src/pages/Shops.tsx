@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Star, Clock, Sparkles, Tag } from "lucide-react";
+import { MapPin, Star, Clock, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { getRecommendedShops, getPreferredTags } from "@/lib/orderHistory";
@@ -67,36 +67,30 @@ export const shopsData = [
 ];
 
 const Shops = () => {
-  // Get user's preferred tags and previously ordered shop IDs
   const preferredTags = useMemo(() => getPreferredTags(), []);
   const frequentShopIds = useMemo(() => getRecommendedShops(4), []);
   
-  // Score and sort shops based on tag preferences and order history
   const shops = useMemo(() => {
     const scored = shopsData.map(shop => {
       let score = 0;
       
-      // Add points for matching tags (weighted by preference order)
       shop.tags.forEach(tag => {
         const tagIndex = preferredTags.indexOf(tag);
         if (tagIndex !== -1) {
-          score += (preferredTags.length - tagIndex) * 2; // Higher weight for more preferred tags
+          score += (preferredTags.length - tagIndex) * 2;
         }
       });
       
-      // Add points for frequently ordered shops
       const shopIndex = frequentShopIds.indexOf(shop.id);
       if (shopIndex !== -1) {
         score += (frequentShopIds.length - shopIndex) * 3;
       }
       
-      // Determine if recommended (has score from tags or orders)
       const recommended = score > 0;
       
       return { ...shop, score, recommended };
     });
     
-    // Sort by score (highest first), then by rating for ties
     return scored.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return b.rating - a.rating;
@@ -104,76 +98,88 @@ const Shops = () => {
   }, [preferredTags, frequentShopIds]);
 
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-12 animate-fade-in">
-          <h1 className="text-5xl font-bold mb-4 text-foreground">Coffee Shops Near You</h1>
-          <p className="text-xl text-muted-foreground">
-            Discover local favorites and choose where to order
+    <div className="min-h-screen bg-background">
+      {/* Header Section */}
+      <div className="bg-muted/30 border-b border-border">
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <h1 className="text-4xl font-bold text-foreground mb-3">Discover Cafes</h1>
+          <p className="text-lg text-muted-foreground max-w-xl">
+            Find your perfect spot. We recommend cafes based on your taste and order history.
           </p>
         </div>
+      </div>
 
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-6">
           {shops.map((shop, index) => (
             <Card 
               key={shop.id} 
-              className="overflow-hidden hover:shadow-warm transition-all duration-300 animate-slide-up bg-card"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300"
+              style={{ animationDelay: `${index * 0.05}s` }}
             >
               <CardContent className="p-6">
+                {/* Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-2xl font-bold text-foreground">{shop.name}</h3>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-xl font-semibold text-foreground">{shop.name}</h3>
                       {shop.recommended && (
-                        <Badge className="bg-accent/20 text-accent border-accent/40">
+                        <Badge className="bg-primary/10 text-primary border-0 text-xs">
                           <Sparkles className="h-3 w-3 mr-1" />
-                          Recommended
+                          For You
                         </Badge>
                       )}
                     </div>
-                    <p className="text-muted-foreground flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
+                    <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5" />
                       {shop.address}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1 bg-accent/10 px-3 py-1 rounded-full">
-                      <Star className="h-4 w-4 fill-accent text-accent" />
-                      <span className="font-semibold text-foreground">{shop.rating}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">{shop.reviews} reviews</span>
+                  <div className="flex items-center gap-1 bg-muted px-2.5 py-1 rounded-full">
+                    <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                    <span className="font-medium text-sm text-foreground">{shop.rating}</span>
                   </div>
                 </div>
 
-                <div className="mb-4 text-sm text-muted-foreground">
-                  <p className="mb-1">{shop.specialty}</p>
-                  <div className="flex flex-wrap gap-1.5 mt-2 mb-2">
-                    {shop.tags.map(tag => (
-                      <Badge 
-                        key={tag} 
-                        variant="outline" 
-                        className={`text-xs ${preferredTags.includes(tag) ? 'bg-primary/10 border-primary/40 text-primary' : ''}`}
-                      >
-                        {shopTagLabels[tag]}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex gap-4 mt-2">
+                {/* Specialty */}
+                <p className="text-sm text-muted-foreground mb-3">{shop.specialty}</p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {shop.tags.map(tag => (
+                    <Badge 
+                      key={tag} 
+                      variant="outline" 
+                      className={`text-xs font-normal ${
+                        preferredTags.includes(tag) 
+                          ? 'bg-primary/5 border-primary/30 text-primary' 
+                          : 'border-border/50'
+                      }`}
+                    >
+                      {shopTagLabels[tag]}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                  <div className="flex gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {shop.distance}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      Open until {shop.openUntil}
+                      Until {shop.openUntil}
                     </span>
                   </div>
+                  <span className="text-xs text-muted-foreground">{shop.reviews} reviews</span>
                 </div>
 
-                <Link to={`/menu/${shop.id}`}>
-                  <Button className="w-full bg-gradient-coffee hover:opacity-90 transition-opacity">
-                    View Menu & Baristas
+                {/* Action */}
+                <Link to={`/menu/${shop.id}`} className="block mt-4">
+                  <Button className="w-full">
+                    View Menu
                   </Button>
                 </Link>
               </CardContent>
